@@ -56,7 +56,7 @@ class Firebase:
 
         db = self.__firebase.database()
 
-        key = db.child("posts").push('')[u'name']
+        key = db.child("posts").push('')['name']
 
         print "-------------"
         print 'key: %s' % key
