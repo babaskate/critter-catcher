@@ -14,15 +14,10 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 
-print "-------------"
-print "firebase: %s" % firebase
-
 userJSON = "../.keys/user.json"
 userData = json.load(open(userJSON))
 
 uuid = userData["uuid"]
-
-print 'uuid: %s' % uuid
 
 # Get a reference to the auth service
 auth = firebase.auth()
@@ -65,9 +60,6 @@ url = storage.child(picPath).get_url(image['downloadTokens'])
 
 print "-------------"
 print "url: %s" % url
-
-print "-------------"
-print "time: %s" % time.time()
 
 data = {}
 postPath = "/posts/" + key
