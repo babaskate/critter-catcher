@@ -2,8 +2,11 @@ import pyrebase
 import json
 import time
 
+configPath = "../.keys/config.json"
+configJSON = json.load(open(configPath))
+
 config = {
-    "apiKey": "AIzaSyArfqaIPpJwCrrxBjIj63sfF_trdU6FGcA",
+    "apiKey": configJSON['apiKey'],
     "authDomain": "crittercatcher-61af4.firebaseapp.com",
     "databaseURL": "https://crittercatcher-61af4.firebaseio.com",
     "projectId": "crittercatcher-61af4",
@@ -12,6 +15,8 @@ config = {
     "serviceAccount": "../.keys/crittercatcher-61af4-firebase-adminsdk-7kdr7-db73c72f78.json"
 }
 
+print config
+
 firebase = pyrebase.initialize_app(config)
 
 userJSON = "../.keys/user.json"
@@ -19,10 +24,16 @@ userData = json.load(open(userJSON))
 
 uuid = userData["uuid"]
 
+print "-------------"
+print "uuid: %s" % uuid
+
 # Get a reference to the auth service
 auth = firebase.auth()
 
 token = auth.create_custom_token(uuid)
+
+print "-------------"
+print "token: %s" % token
 
 user = auth.sign_in_with_custom_token(token)
 
