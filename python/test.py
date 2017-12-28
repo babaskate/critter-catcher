@@ -5,6 +5,8 @@ import time
 configPath = "../.keys/config.json"
 configJSON = json.load(open(configPath))
 
+print configJSON[]
+
 config = {
     "apiKey": configJSON['apiKey'],
     "authDomain": "crittercatcher-61af4.firebaseapp.com",
@@ -14,8 +16,6 @@ config = {
     "messagingSenderId": "745850059470",
     "serviceAccount": "../.keys/crittercatcher-61af4-firebase-adminsdk-7kdr7-db73c72f78.json"
 }
-
-print config
 
 firebase = pyrebase.initialize_app(config)
 
