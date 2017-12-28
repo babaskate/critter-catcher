@@ -52,35 +52,33 @@ class Firebase:
 
         return userInfo
 
-    def uploadNewPic(self):
+    def uploadNewPic(self, filename):
 
         db = self.__firebase.database()
+        storage = self.__firebase.storage()
 
         key = db.child("posts").push('')['name']
 
-        print "-------------"
-        print 'key: %s' % key
-
-        storage = self.__firebase.storage()
-
-        picPath = self.__uuid + '/full/' + key + '/foobar.jpg'
-
+        picPath = self.__uuid + '/full/' + key + '/' + filename
         print "-------------"
         print 'picPath: %s' % picPath
 
-        # as admin
-        image = storage.child(picPath).put("/home/pi/var/camera/photos/dark.jpg", self.getUser()['idToken'])
+        capturePath='/home/pi/var/camera/photos/%s' % (filename)
 
+        # as admin
+        image = storage.child(picPath).put(capturePath, self.getUser()['idToken'])
         print "-------------"
         print 'image: %s' % image
 
         url = storage.child(picPath).get_url(image['downloadTokens'])
-
         print "-------------"
         print "url: %s" % url
 
         data = {}
         postPath = "/posts/" + key
+        print "-------------"
+        print "postPath: %s" % postPath
+
         data[postPath] = {
             "full_url": url,
             "thumb_url": url,
@@ -99,15 +97,14 @@ class Firebase:
         peoplePath = "/people/" + self.__uuid + "/posts/" + key
         print "-------------"
         print "peoplePath: %s" % peoplePath
+
         data[peoplePath] = "true"
 
         #update the feed
         feedPath = "/feed/" + self.__uuid + "/" + key
         print "-------------"
         print "feedPath: %s" % feedPath
+
         data[feedPath] = "true"
 
         db.update(data)
-
-fb = Firebase()
-fb.uploadNewPic()
