@@ -1,6 +1,6 @@
-import pyrebase
 import json
 import time
+import pyrebase
 
 class Firebase:
 
