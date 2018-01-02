@@ -1,20 +1,27 @@
+#!/usr/bin/python
+
 import json
 import time
-import pyrebase
+import os
+from pathlib import Path
+from pyrebase import pyrebase
 
 class Firebase:
 
-    __configPath = "../.keys/config.json"
+    __configPath = "~/dev/critter-catcher/.keys/config.json"
     __configJSON = {}
     __configData = {}
-    __userPath = "../.keys/user.json"
+    __userPath = "~/dev/critter-catcher/.keys/user.json"
     __userData = {}
+    __serviceAccountPath = "~/dev/critter-catcher/.keys/crittercatcher-61af4-firebase-adminsdk-7kdr7-db73c72f78.json"
     __firebase = {}
     __uuid = ""
 
+    print os.path.abspath(".keys/config.json")
+
     def __init__(self):
         
-        self.__configJSON = json.load(open(self.__configPath))
+        self.__configJSON = json.load(open(os.path.expanduser(self.__configPath)))
 
         self.__configData = {
             "apiKey": self.__configJSON['apiKey'],
@@ -23,12 +30,12 @@ class Firebase:
             "projectId": "crittercatcher-61af4",
             "storageBucket": "crittercatcher-61af4.appspot.com",
             "messagingSenderId": "745850059470",
-            "serviceAccount": "../.keys/crittercatcher-61af4-firebase-adminsdk-7kdr7-db73c72f78.json"
+            "serviceAccount": os.path.expanduser(self.__serviceAccountPath)
         }
 
         self.__firebase = pyrebase.initialize_app(self.__configData)
 
-        self.__userData = json.load(open(self.__userPath))
+        self.__userData = json.load(open(os.path.expanduser(self.__userPath)))
 
         self.__uuid = self.__userData["uuid"]
 
@@ -52,7 +59,7 @@ class Firebase:
 
         return userInfo
 
-    def uploadNewPic(self, filename):
+    def uploadNewPic(self, capturePath, filename):
 
         db = self.__firebase.database()
         storage = self.__firebase.storage()
@@ -60,24 +67,24 @@ class Firebase:
         key = db.child("posts").push('')['name']
 
         picPath = self.__uuid + '/full/' + key + '/' + filename
-        print "-------------"
-        print 'picPath: %s' % picPath
+        print("-------------")
+        print('picPath: %s' % picPath)
 
-        capturePath='/home/pi/var/camera/photos/%s' % (filename)
+        #capturePath='/home/pi/var/camera/photos/%s' % (filename)
 
         # as admin
         image = storage.child(picPath).put(capturePath, self.getUser()['idToken'])
-        print "-------------"
-        print 'image: %s' % image
+        print("-------------")
+        print('image: %s' % image)
 
         url = storage.child(picPath).get_url(image['downloadTokens'])
-        print "-------------"
-        print "url: %s" % url
+        print("-------------")
+        print("url: %s" % url)
 
         data = {}
         postPath = "/posts/" + key
-        print "-------------"
-        print "postPath: %s" % postPath
+        print("-------------")
+        print("postPath: %s" % postPath)
 
         data[postPath] = {
             "full_url": url,
@@ -95,15 +102,15 @@ class Firebase:
 
         #associate post to person
         peoplePath = "/people/" + self.__uuid + "/posts/" + key
-        print "-------------"
-        print "peoplePath: %s" % peoplePath
+        print("-------------")
+        print("peoplePath: %s" % peoplePath)
 
         data[peoplePath] = "true"
 
         #update the feed
         feedPath = "/feed/" + self.__uuid + "/" + key
-        print "-------------"
-        print "feedPath: %s" % feedPath
+        print("-------------")
+        print("feedPath: %s" % feedPath)
 
         data[feedPath] = "true"
 

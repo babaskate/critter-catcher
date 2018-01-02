@@ -1,16 +1,17 @@
-from datetime import datetime as dt
+#!/usr/bin/python
+
 from utils.getopts import getopts
 import sys
-import firebase
+from firebase import Firebase
 
 args = getopts(sys.argv)
 path = args['-path']
 print("---------------------")
 print("path: %s" % path)
 print("---------------------")
+filename = path.split("/")[4]
+print(filename)
 
-#now=dt.now().strftime("%m-%d-%y-%H-%M")
-#filename = "capture_" + now + ".jpg"
-#fb = FirebaseWrapper()
-#fb.uploadNewPic(path)
+fb = Firebase()
+fb.uploadNewPic(path, filename)
 
