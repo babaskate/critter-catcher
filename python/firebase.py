@@ -17,8 +17,6 @@ class Firebase:
     __firebase = {}
     __uuid = ""
 
-    print os.path.abspath(".keys/config.json")
-
     def __init__(self):
         
         self.__configJSON = json.load(open(os.path.expanduser(self.__configPath)))
@@ -67,24 +65,22 @@ class Firebase:
         key = db.child("posts").push('')['name']
 
         picPath = self.__uuid + '/full/' + key + '/' + filename
-        print("-------------")
-        print('picPath: %s' % picPath)
-
-        #capturePath='/home/pi/var/camera/photos/%s' % (filename)
+        #print("-------------")
+        #print('picPath: %s' % picPath)
 
         # as admin
         image = storage.child(picPath).put(capturePath, self.getUser()['idToken'])
-        print("-------------")
-        print('image: %s' % image)
+        #print("-------------")
+        #print('image: %s' % image)
 
         url = storage.child(picPath).get_url(image['downloadTokens'])
-        print("-------------")
-        print("url: %s" % url)
+        #print("-------------")
+        #print("url: %s" % url)
 
         data = {}
         postPath = "/posts/" + key
-        print("-------------")
-        print("postPath: %s" % postPath)
+        #print("-------------")
+        #print("postPath: %s" % postPath)
 
         data[postPath] = {
             "full_url": url,
@@ -102,15 +98,15 @@ class Firebase:
 
         #associate post to person
         peoplePath = "/people/" + self.__uuid + "/posts/" + key
-        print("-------------")
-        print("peoplePath: %s" % peoplePath)
+        #print("-------------")
+        #print("peoplePath: %s" % peoplePath)
 
         data[peoplePath] = "true"
 
         #update the feed
         feedPath = "/feed/" + self.__uuid + "/" + key
-        print("-------------")
-        print("feedPath: %s" % feedPath)
+        #print("-------------")
+        #print("feedPath: %s" % feedPath)
 
         data[feedPath] = "true"
 
